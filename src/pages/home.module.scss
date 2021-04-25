@@ -1,1 +1,44 @@
-// TODO
+.posts {
+
+  a {
+    display: block;
+    & + a {
+      margin-top: 3.125rem;
+    }
+
+    strong {
+      display: block;
+      font-size: 1.6875rem;
+      font-weight: 700;
+      margin-bottom: 0.625rem;
+      color: var(--gray-50);
+    }
+
+    p {
+      font-weight: 400;
+      font-size: 1.125rem;
+      color: var(--gray-100);
+      margin-bottom: 1.5rem;
+    }
+
+    .data_post {
+      display: flex;
+      flex-direction: row;
+
+      span {
+        display: flex;
+        align-items: center;
+
+        svg {
+          margin-right: 0.625rem;;
+        }
+
+        & + span {
+          margin-left: 1.875rem;
+        }
+
+      }
+    }
+  }
+
+}
