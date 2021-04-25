@@ -1,4 +1,5 @@
 import { GetStaticProps } from 'next';
+import Link from 'next/link';
 
 import Prismic from '@prismicio/client';
 import { RichText } from 'prismic-dom';
@@ -35,20 +36,22 @@ export default function Home({ postsPagination }: HomeProps): any {
       <main className={commonStyles.container}>
         <div className={styles.posts}>
           {postsPagination.results.map((post: Post) => (
-            <a href="/">
-              <strong>{post.data.title}</strong>
-              <p>{post.data.subtitle}</p>
-              <div className={styles.data_post}>
-                <span>
-                  <FiCalendar size={20} color="#d7d7d7" />
-                  {post.first_publication_date}
-                </span>
-                <span>
-                  <FiUser size={20} color="#d7d7d7" />
-                  {post.data.author}
-                </span>
-              </div>
-            </a>
+            <Link href={`/post/${post.uid}`}>
+              <a href="/">
+                <strong>{post.data.title}</strong>
+                <p>{post.data.subtitle}</p>
+                <div className={styles.data_post}>
+                  <span>
+                    <FiCalendar size={20} color="#d7d7d7" />
+                    {post.first_publication_date}
+                  </span>
+                  <span>
+                    <FiUser size={20} color="#d7d7d7" />
+                    {post.data.author}
+                  </span>
+                </div>
+              </a>
+            </Link>
           ))}
         </div>
       </main>

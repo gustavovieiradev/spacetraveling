@@ -6,12 +6,18 @@
       margin-top: 3.125rem;
     }
 
+    transition: color 0.2s;
+    color: var(--gray-50);
+    &:hover {
+      color: var(--pink-500);
+    }
+
     strong {
       display: block;
       font-size: 1.6875rem;
       font-weight: 700;
       margin-bottom: 0.625rem;
-      color: var(--gray-50);
+
     }
 
     p {
@@ -28,6 +34,7 @@
       span {
         display: flex;
         align-items: center;
+        color: var(--gray-100);
 
         svg {
           margin-right: 0.625rem;;
