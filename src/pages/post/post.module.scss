@@ -1,1 +1,27 @@
-// TODO
+.post {
+  h1 {
+    font-weight: 700;
+    font-size: 3rem;
+    margin-bottom: 1.5625rem;
+  }
+
+  .info {
+    display: flex;
+    flex-direction: row;
+
+    span {
+      display: flex;
+      align-items: center;
+      color: var(--gray-100);
+      font-size: 14px;
+
+      svg {
+        margin-right: 0.625rem;
+      }
+
+      & + span {
+        margin-left: 1.6875rem;
+      }
+    }
+  }
+}

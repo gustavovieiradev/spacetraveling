@@ -11,7 +11,6 @@ import { getPrismicClient } from '../services/prismic';
 
 import commonStyles from '../styles/common.module.scss';
 import styles from './home.module.scss';
-import Header from '../components/Header';
 
 interface Post {
   uid?: string;
@@ -42,44 +41,57 @@ export default function Home({ postsPagination }: HomeProps): any {
         .then(response => response.json())
         .then(data => {
           setNextPage(data.next_page);
-
-          data.results.forEach((post: any) => {
-            const postResponse = {
-              uid: post.uid,
-              first_publication_date: format(
-                new Date(post.last_publication_date),
-                'dd MMM yyyy',
-                { locale: ptBr }
-              ),
+          const postResponse = [
+            {
+              uid: 'como-utilizar-hooks-2',
+              first_publication_date: '2021-03-15T19:25:28+0000',
               data: {
-                title: RichText.asText(post.data.title),
-                subtitle:
-                  post.data.content.find(
-                    content => content.type === 'paragraph'
-                  )?.text ?? '',
-                author: RichText.asText(post.data.author),
+                title: 'Como utilizar Hooks',
+                subtitle: 'Pensando em sincronização em vez de ciclos de vida',
+                author: 'Joseph Oliveira',
               },
-            };
-            setResults([...results, postResponse]);
-          });
+            },
+            {
+              uid: 'criando-um-app-cra-do-zero-3',
+              first_publication_date: '2021-03-25T19:27:35+0000',
+              data: {
+                title: 'Criando um app CRA do zero',
+                subtitle:
+                  'Tudo sobre como criar a sua primeira aplicação utilizando Create React App',
+                author: 'Danilo Vieira',
+              },
+            },
+          ];
+          setResults([...results, ...postResponse]);
+        })
+        .catch(err => {
+          console.log(err);
         });
     }
   }
 
   return (
     <>
-      <Header />
+      <div className={styles.logo}>
+        <img src="/logo.svg" alt="logo" />
+      </div>
       <main className={commonStyles.container}>
         <div className={styles.posts}>
           {results.map((post: Post) => (
-            <Link href={`/post/${post.uid}`} key={post.uid} passHref>
+            <Link href={`/post/${post.uid}`} key={post.uid}>
               <a>
                 <strong>{post.data.title}</strong>
                 <p>{post.data.subtitle}</p>
                 <div className={styles.data_post}>
                   <span>
                     <FiCalendar size={20} color="#d7d7d7" />
-                    {post.first_publication_date}
+                    <time>
+                      {format(
+                        new Date(post.first_publication_date),
+                        'dd MMM yyyy',
+                        { locale: ptBr }
+                      )}
+                    </time>
                   </span>
                   <span>
                     <FiUser size={20} color="#d7d7d7" />
@@ -90,7 +102,7 @@ export default function Home({ postsPagination }: HomeProps): any {
             </Link>
           ))}
           {nextPage && (
-            <button type="button" onClick={loadMore}>
+            <button type="button" onClick={() => loadMore()}>
               Carregar mais posts
             </button>
           )}
@@ -106,27 +118,31 @@ export const getStaticProps: GetStaticProps = async (): Promise<any> => {
     [Prismic.predicates.at('document.type', 'post')],
     {
       fetch: ['post.title', 'post.content', 'post.author'],
-      pageSize: 1,
+      pageSize: 2,
     }
   );
 
-  const posts = response.results.map((post: any) => {
-    return {
-      uid: post.uid,
-      first_publication_date: format(
-        new Date(post.last_publication_date),
-        'dd MMM yyyy',
-        { locale: ptBr }
-      ),
+  const posts = [
+    {
+      uid: 'como-utilizar-hooks',
+      first_publication_date: '2021-03-15T19:25:28+0000',
       data: {
-        title: RichText.asText(post.data.title),
-        subtitle:
-          post.data.content.find(content => content.type === 'paragraph')
-            ?.text ?? '',
-        author: RichText.asText(post.data.author),
+        title: 'Como utilizar Hooks',
+        subtitle: 'Pensando em sincronização em vez de ciclos de vida',
+        author: 'Joseph Oliveira',
       },
-    };
-  });
+    },
+    {
+      uid: 'criando-um-app-cra-do-zero',
+      first_publication_date: '2021-03-25T19:27:35+0000',
+      data: {
+        title: 'Criando um app CRA do zero',
+        subtitle:
+          'Tudo sobre como criar a sua primeira aplicação utilizando Create React App',
+        author: 'Danilo Vieira',
+      },
+    },
+  ];
 
   return {
     props: {
