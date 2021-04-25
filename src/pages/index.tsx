@@ -6,6 +6,7 @@ import { RichText } from 'prismic-dom';
 import ptBr from 'date-fns/locale/pt-BR';
 import { format } from 'date-fns';
 import { FiCalendar, FiUser } from 'react-icons/fi';
+import { useState } from 'react';
 import { getPrismicClient } from '../services/prismic';
 
 import commonStyles from '../styles/common.module.scss';
@@ -31,12 +32,45 @@ interface HomeProps {
 }
 
 export default function Home({ postsPagination }: HomeProps): any {
+  const [nextPage, setNextPage] = useState<string>(postsPagination.next_page);
+  const [results, setResults] = useState<Post[]>(postsPagination.results);
+
+  async function loadMore(): Promise<void> {
+    if (nextPage) {
+      fetch(postsPagination.next_page)
+        .then(response => response.json())
+        .then(data => {
+          setNextPage(data.next_page);
+
+          data.results.forEach((post: any) => {
+            const postResponse = {
+              uid: post.uid,
+              first_publication_date: format(
+                new Date(post.last_publication_date),
+                'dd MMM yyyy',
+                { locale: ptBr }
+              ),
+              data: {
+                title: RichText.asText(post.data.title),
+                subtitle:
+                  post.data.content.find(
+                    content => content.type === 'paragraph'
+                  )?.text ?? '',
+                author: RichText.asText(post.data.author),
+              },
+            };
+            setResults([...results, postResponse]);
+          });
+        });
+    }
+  }
+
   return (
     <>
       <main className={commonStyles.container}>
         <div className={styles.posts}>
-          {postsPagination.results.map((post: Post) => (
-            <Link href={`/post/${post.uid}`}>
+          {results.map((post: Post) => (
+            <Link href={`/post/${post.uid}`} key={post.uid}>
               <a href="/">
                 <strong>{post.data.title}</strong>
                 <p>{post.data.subtitle}</p>
@@ -53,6 +87,11 @@ export default function Home({ postsPagination }: HomeProps): any {
               </a>
             </Link>
           ))}
+          {nextPage && (
+            <button type="button" onClick={loadMore}>
+              Carregar mais
+            </button>
+          )}
         </div>
       </main>
     </>
@@ -65,7 +104,7 @@ export const getStaticProps: GetStaticProps = async (): Promise<any> => {
     [Prismic.predicates.at('document.type', 'post')],
     {
       fetch: ['post.title', 'post.content', 'post.author'],
-      pageSize: 100,
+      pageSize: 1,
     }
   );
 

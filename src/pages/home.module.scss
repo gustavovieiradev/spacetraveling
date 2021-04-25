@@ -1,5 +1,4 @@
 .posts {
-
   a {
     display: block;
     & + a {
@@ -48,4 +47,13 @@
     }
   }
 
+  button {
+    color: var(--pink-500);
+    outline: 0;
+    background: transparent;
+    border: 0;
+    font-weight: 600;
+    font-size: 1.125rem;
+    margin-top: 3.75rem;
+  }
 }
